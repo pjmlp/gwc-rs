@@ -13,20 +13,25 @@ use std::fs::File;
 use std::io::prelude::*;
 use std::io::BufReader;
 
-// The application window state
+/// The application window state
 #[derive(Debug)]
 struct GWCApp {
+    /// the window label used to display the counters
     msg_label: Option<Label>,
+
+    /// a kind of handle for the Gtk+ window
     window : Option<Window>
 
 }
 
 impl GWCApp {
 
+    /// Provides a new instance of the GWC application
     pub fn new() -> GWCApp {
         GWCApp { msg_label: None, window: None }
     }
 
+    /// Responsible for initializing the application state, including the whole UI
     pub fn init(&mut self) {
         let v_box = gtk::Box::new(gtk::Orientation::Vertical, 10);
 
@@ -56,11 +61,9 @@ impl GWCApp {
 
         self.window = Some(win);
         self.msg_label = Some(file_counter)
-
-        
     }
 
-    // Displays the application window
+    /// Displays the application window
     pub fn show(&self) {
         if let Some(ref win) = self.window {
             win.show_all()
@@ -69,8 +72,8 @@ impl GWCApp {
         }
     }
 
-    //  Called when the user selects the
-    // File->Open option
+    ///  Called when the user selects the
+    /// File->Open option
     fn on_menu_open(&self) {
         let filesel = FileChooserDialog::new(Some("Choose a file"), None::<&Window>,
                                                     FileChooserAction::Open);
@@ -91,12 +94,12 @@ impl GWCApp {
 
 
 
-    //  Called when the user presses the
-    // Ok button on the FileSelection dialog
+    ///  Called when the user presses the
+    /// Ok button on the FileSelection dialog
     fn process_file (&self, filename : PathBuf) {
         println!("Files: {:?}", filename);
 
-        if let Some ((words, lines, bytes)) = GWCApp::count_words(&filename) {
+        if let Some ((words, lines, bytes)) = count_words(&filename) {
             let msg = format!("The file {:?}, has {} lines, {} words and {} bytes", filename, words, lines, bytes);
             if let Some(ref lbl) = self.msg_label {
                 lbl.set_text(&msg.to_string());
@@ -110,34 +113,7 @@ impl GWCApp {
         }
     }
 
-    /// Counts the number of words, lines and bytes on the given file
-    fn count_words(filename: &PathBuf) -> Option<(usize, usize, usize)> {
-        let mut words = 0;
-        let mut lines = 0;
-        let mut bytes = 0;
-
-        // Open the path in read-only mode, returns `io::Result<File>`
-        if let Ok(file) = File::open(&filename) {
-            let reader = BufReader::new(file);
-            for line in reader.lines() {
-                if let Ok(row) = line {
-                    lines += 1;
-                    bytes += row.len();
-                    words += row.split_whitespace().count();
-                }
-                else {
-                    // IO error no need to carry on
-                    return None
-                }
-            }       
-        } else {
-            return None
-        }
-        Some((words, lines, bytes))
-    }
-
-
-    // Creates the application menus
+    /// Creates the application menus
     fn init_menus (&self) -> MenuBar {
         let menu = Menu::new();
         let menu_bar = MenuBar::new();
@@ -189,7 +165,7 @@ impl GWCApp {
         menu_bar
     }
 
-    // Creates the application toolbar
+    /// Creates the application toolbar
     fn init_toolbar(&self) -> Toolbar {
         let toolbar = Toolbar::new();
         toolbar.set_style(ToolbarStyle::Both);
@@ -217,6 +193,33 @@ impl GWCApp {
     } 
 }
 
+/// Counts the number of words, lines and bytes on the given file
+fn count_words(filename: &PathBuf) -> Option<(usize, usize, usize)> {
+    let mut words = 0;
+    let mut lines = 0;
+    let mut bytes = 0;
+
+    // Open the path in read-only mode, returns `io::Result<File>`
+    if let Ok(file) = File::open(&filename) {
+        let reader = BufReader::new(file);
+        for line in reader.lines() {
+            if let Ok(row) = line {
+                lines += 1;
+                bytes += row.len();
+                words += row.split_whitespace().count();
+            }
+            else {
+                // IO error no need to carry on
+                return None
+            }
+        }       
+    } else {
+        return None
+    }
+    Some((words, lines, bytes))
+}
+
+/// Application entry point
 fn main() {
     if gtk::init().is_err() {
         println!("Failed to initialize GTK.");
