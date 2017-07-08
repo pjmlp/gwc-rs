@@ -54,7 +54,7 @@ impl GWCApp {
         v_box.pack_start(&tool_bar, false, false, 0);
 
         // Create the text label for showing the word count
-        let file_counter = Label::new(Some("No file counted"));
+        let file_counter = Label::new("No file counted");
         v_box.pack_start(&file_counter, true, true, 0);
 
         win.add(&v_box);
@@ -68,7 +68,7 @@ impl GWCApp {
         if let Some(ref win) = self.window {
             win.show_all()
         } else {
-            println!("no data");
+            panic!("Window has not been properly initialized");
         }
     }
 
