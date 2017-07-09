@@ -90,20 +90,22 @@ impl GWCApp {
     ///  Called when the user selects the
     /// File->Open option
     fn on_menu_open(&self) {
-        let filesel = FileChooserDialog::new(Some("Choose a file"), None::<&Window>,
-                                                    FileChooserAction::Open);
-        filesel.add_buttons(&[
-            ("Open", ResponseType::Ok.into()),
-            ("Cancel", ResponseType::Cancel.into())
-        ]);
+        if let Some (ref win) = self.window {
+            let filesel = FileChooserDialog::new(Some("Choose a file"), Some(win),
+                                                        FileChooserAction::Open);
+            filesel.add_buttons(&[
+                ("Open", ResponseType::Ok.into()),
+                ("Cancel", ResponseType::Cancel.into())
+            ]);
 
-        filesel.set_select_multiple(true);
-        filesel.run();
-        let file = filesel.get_filename();
-        filesel.destroy();
+            filesel.set_select_multiple(true);
+            filesel.run();
+            let file = filesel.get_filename();
+            filesel.destroy();
 
-        if let Some(filename) = file {
-            self.process_file(filename);
+            if let Some(filename) = file {
+                self.process_file(filename);
+            }
         }
     }
 
@@ -120,11 +122,13 @@ impl GWCApp {
                 lbl.set_text(&msg.to_string());
             }
         } else {
-            let msg = format!("Could not open file {:?}", filename);
-            let dialog = MessageDialog::new(None::<&Window>, DIALOG_MODAL,
-                MessageType::Error, ButtonsType::Ok, &msg);
-            dialog.run();
-            dialog.destroy();
+            if let Some (ref win) = self.window {
+                let msg = format!("Could not open file {:?}", filename);
+                let dialog = MessageDialog::new(Some(win), DIALOG_MODAL,
+                    MessageType::Error, ButtonsType::Ok, &msg);
+                dialog.run();
+                dialog.destroy();
+            }
         }
     }
 
