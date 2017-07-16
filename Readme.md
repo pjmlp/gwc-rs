@@ -9,6 +9,26 @@ The purpose was to get a grasp of how does it feel to use Rust for writting
 Gtk+ applications, specially given that GNOME team seems to be exploring the idea
 to adopt Rust to the set of main supported languages. 
 
+# Overview
+
+The screenshot below shows how the old demo application used to look like, back in the
+GNOME 1.x days.
+
+![Old version](screenshots/old-file-read.png)
+
+## Starting the application
+
+Now the application looks like the screenshot below thanks to Gtk-rs and Gtk+ 3.0.
+
+![New version](screenshots/initial-state.png)
+
+## Displaying the results
+
+After processing the given file, the results get presented in a similar way like on the old version.
+
+![New version](screenshots/file-read.png)
+
+
 # Compiling
 
 The application was developed with Rust 1.18, maybe it can be compiled with older
