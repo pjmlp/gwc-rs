@@ -34,6 +34,8 @@ After processing the given file, the results get presented in a similar way like
 The application was developed with Rust 1.18, maybe it can be compiled with older
 versions, but I haven't tested.
 
+To compile just use *cargo* as usual.
+
 # Documentation generation
 
 Given that cargo doesn't have an easy way to generate documentation for all types,
