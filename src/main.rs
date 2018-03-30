@@ -21,7 +21,7 @@ extern crate gtk;
 use gtk::prelude::*;
 use gtk::{Window, WindowType, Label, Menu, MenuBar, MenuItem, IconSize, Image, AboutDialog, Toolbar, ToolButton,
     ToolbarStyle, SeparatorToolItem, FileChooserDialog, FileChooserAction, ResponseType,
-    MessageDialog, MessageType, ButtonsType, DIALOG_MODAL};
+    MessageDialog, MessageType, ButtonsType, DialogFlags};
 
 use std::path::PathBuf;
 use std::fs::File;
@@ -128,7 +128,7 @@ impl GWCApp {
             lbl.set_text(&msg.to_string());
         } else {
             let msg = format!("Could not open file {:?}", filename);
-            let dialog = MessageDialog::new(Some(win.as_ref()), DIALOG_MODAL,
+            let dialog = MessageDialog::new(Some(win.as_ref()), DialogFlags::MODAL,
                 MessageType::Error, ButtonsType::Ok, &msg);
             dialog.run();
             dialog.destroy();
