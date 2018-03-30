@@ -40,3 +40,7 @@ To compile just use *cargo* as usual.
 
 Given that cargo doesn't have an easy way to generate documentation for all types,
 including the private ones, the shell script *gen-docs.sh* takes care of it.
+
+# Acknowledgements
+
+Thanks to cmars (Casey Marshall) for his suggestion how to improve IO error handling.

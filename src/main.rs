@@ -123,15 +123,20 @@ impl GWCApp {
     ///  Called when the user presses the
     /// Ok button on the FileSelection dialog
     fn process_file (filename : PathBuf, win:&Rc<Window>, lbl : &Rc<Label>) {
-        if let Some ((words, lines, bytes)) = count_words(&filename) {
-            let msg = format!("The file {:?}, has {} lines, {} words and {} bytes", filename, words, lines, bytes);
-            lbl.set_text(&msg.to_string());
-        } else {
-            let msg = format!("Could not open file {:?}", filename);
-            let dialog = MessageDialog::new(Some(win.as_ref()), DialogFlags::MODAL,
-                MessageType::Error, ButtonsType::Ok, &msg);
-            dialog.run();
-            dialog.destroy();
+        match count_words(&filename) {
+            Ok ((words, lines, bytes)) => {
+                let msg = format!("The file {:?}, has {} lines, {} words and {} bytes", filename, words, lines, bytes);
+                lbl.set_text(&msg.to_string());
+                
+            }
+            Err(cause) => {
+                // This could be better, but it is only for ilustration purposes
+                let msg = format!("Could not process file {:?}, error {:?}", filename, cause);
+                let dialog = MessageDialog::new(Some(win.as_ref()), DialogFlags::MODAL,
+                    MessageType::Error, ButtonsType::Ok, &msg);
+                dialog.run();
+                dialog.destroy();    
+            }
         }
     }
 
@@ -232,29 +237,25 @@ impl GWCApp {
 }
 
 /// Counts the number of words, lines and bytes on the given file
-fn count_words(filename: &PathBuf) -> Option<(usize, usize, usize)> {
+fn count_words(filename: &PathBuf) -> std::io::Result<(usize, usize, usize)> {
     let mut words = 0;
     let mut lines = 0;
     let mut bytes = 0;
 
-    // Open the path in read-only mode, returns `io::Result<File>`
-    if let Ok(file) = File::open(&filename) {
-        let reader = BufReader::new(file);
-        for line in reader.lines() {
-            if let Ok(row) = line {
-                lines += 1;
-                bytes += row.len();
-                words += row.split_whitespace().count();
-            }
-            else {
-                // IO error no need to carry on
-                return None
-            }
-        }       
-    } else {
-        return None
-    }
-    Some((words, lines, bytes))
+    // Opens the file in read-only mode
+    let file = File::open(&filename)?;
+    let reader = BufReader::new(file);
+
+    // now process the contents
+    for line in reader.lines() {
+        let row = line?;
+
+        lines += 1;
+        bytes += row.len();
+        words += row.split_whitespace().count();
+    }       
+
+    Ok((words, lines, bytes))
 }
 
 /// Application entry point
