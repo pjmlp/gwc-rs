@@ -28,6 +28,7 @@ use std::fs::File;
 use std::io::prelude::*;
 use std::io::BufReader;
 use std::rc::Rc;
+use std::borrow::Borrow;
 
 /// The application window state
 #[derive(Debug, Clone)]
@@ -185,17 +186,22 @@ impl GWCApp {
             gtk::main_quit();
         });
 
-        about.connect_activate(move |_| {
-            let p = AboutDialog::new();
-            p.set_authors(&["Paulo Pinto"]);
-            p.set_website_label(Some("A simple GUI version of wc"));
-            p.set_website(Some("https://github.com/pjmlp/gwc-rs"));
-            p.set_authors(&["Paulo Pinto"]);
-            p.set_title("About GWC");
-            p.set_comments("A port of the original C++/Gnomemm application into Rust/Gtk-rs.");
-            p.run();
-            p.destroy();
-        });
+        if let Some(ref win) = self.window {
+            let wx = win.to_owned().clone();
+            about.connect_activate(move |_| {
+                let p = AboutDialog::new();
+
+                p.set_authors(&["Paulo Pinto"]);
+                p.set_website_label(Some("A simple GUI version of wc"));
+                p.set_website(Some("https://github.com/pjmlp/gwc-rs"));
+                p.set_authors(&["Paulo Pinto"]);
+                p.set_title("About GWC");
+                p.set_comments("A port of the original C++/Gnomemm application into Rust/Gtk-rs.");
+                p.set_transient_for(Some(wx.borrow() as &Window));
+                p.run();
+                p.destroy();
+            });
+        }
 
         menu_bar
     }
