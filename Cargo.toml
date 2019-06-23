@@ -1,11 +1,15 @@
 [package]
 name = "gwc"
-version = "0.1.1"
+version = "0.1.2"
 authors = ["Paulo Pinto <pjmlp@progtools.org>"]
 edition="2018"
 
 [dependencies]
 
 [dependencies.gtk]
-version = "0.5.0"
-features = ["v3_10"]
+version = "0.6.0"
+features = ["v3_16"]
+
+[dependencies.gio]
+version = ""
+features = ["v2_44"]
