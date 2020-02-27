@@ -63,7 +63,7 @@ impl GWCApp {
         });
 
         // We will need this in helper methods
-        let file_counter = Label::new("No file counted");
+        let file_counter = Label::new(Some("No file counted"));
 
         // The fields must be updated for the helper methods to work as expected.
         self.window = Some(Rc::new(win));
@@ -150,7 +150,7 @@ impl GWCApp {
         let quit = MenuItem::new_with_label("Quit");
         let file_item = MenuItem::new();
         let file_box = gtk::Box::new(gtk::Orientation::Horizontal, 0);
-        let file_image = Image::new_from_icon_name("document-open", IconSize::Menu.into());
+        let file_image = Image::new_from_icon_name(Some("document-open"), IconSize::Menu.into());
         let file_label = Label::new(Some("File"));
 
         file_box.pack_start(&file_image, false, false, 0);
@@ -196,7 +196,7 @@ impl GWCApp {
                 p.set_website(Some("https://github.com/pjmlp/gwc-rs"));
                 p.set_authors(&["Paulo Pinto"]);
                 p.set_title("About GWC");
-                p.set_comments("A port of the original C++/Gnomemm application into Rust/Gtk-rs.");
+                p.set_comments(Some("A port of the original C++/Gnomemm application into Rust/Gtk-rs."));
                 p.set_transient_for(Some(wx.borrow() as &Window));
                 p.run();
                 p.destroy();
@@ -211,15 +211,15 @@ impl GWCApp {
         let toolbar = Toolbar::new();
         toolbar.set_style(ToolbarStyle::Both);
 
-        let open_btn_image = Image::new_from_icon_name("document-open", IconSize::LargeToolbar.into());
-        let open_btn = ToolButton::new(Some(&open_btn_image), "Open");
+        let open_btn_image = Image::new_from_icon_name(Some("document-open"), IconSize::LargeToolbar.into());
+        let open_btn = ToolButton::new(Some(&open_btn_image), Some("Open"));
         toolbar.insert(&open_btn, 0);
 
         let sep = SeparatorToolItem::new();
         toolbar.insert(&sep, 1);
 
-        let quit_btn_image = Image::new_from_icon_name("application-exit", IconSize::LargeToolbar.into());
-        let quit_btn = ToolButton::new(Some(&quit_btn_image), "Quit");
+        let quit_btn_image = Image::new_from_icon_name(Some("application-exit"), IconSize::LargeToolbar.into());
+        let quit_btn = ToolButton::new(Some(&quit_btn_image), Some("Quit"));
         toolbar.insert(&quit_btn, 2);
 
 
