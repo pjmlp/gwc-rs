@@ -112,7 +112,7 @@ impl GWCApp {
         filesel.set_select_multiple(true);
         filesel.run();
         let file = filesel.get_filename();
-        filesel.destroy();
+        filesel.close();
 
         if let Some(filename) = file {
             GWCApp::process_file(filename, &win, &lbl);
@@ -136,7 +136,7 @@ impl GWCApp {
                 let dialog = MessageDialog::new(Some(win.as_ref()), DialogFlags::MODAL,
                     MessageType::Error, ButtonsType::Ok, &msg);
                 dialog.run();
-                dialog.destroy();    
+                dialog.close();    
             }
         }
     }
@@ -145,12 +145,12 @@ impl GWCApp {
     fn init_menus (&self) -> MenuBar {
         let menu = Menu::new();
         let menu_bar = MenuBar::new();
-        let file = MenuItem::new_with_label("File");
+        let file = MenuItem::with_label("File");
     
-        let quit = MenuItem::new_with_label("Quit");
+        let quit = MenuItem::with_label("Quit");
         let file_item = MenuItem::new();
         let file_box = gtk::Box::new(gtk::Orientation::Horizontal, 0);
-        let file_image = Image::new_from_icon_name(Some("document-open"), IconSize::Menu.into());
+        let file_image = Image::from_icon_name(Some("document-open"), IconSize::Menu.into());
         let file_label = Label::new(Some("File"));
 
         file_box.pack_start(&file_image, false, false, 0);
@@ -164,8 +164,8 @@ impl GWCApp {
 
         // Extras menu
         let extras_menu = Menu::new();
-        let extras = MenuItem::new_with_label("Extras");
-        let about = MenuItem::new_with_label("About");
+        let extras = MenuItem::with_label("Extras");
+        let about = MenuItem::with_label("About");
 
         extras_menu.append(&about);
         extras.set_submenu(Some(&extras_menu));
@@ -199,7 +199,7 @@ impl GWCApp {
                 p.set_comments(Some("A port of the original C++/Gnomemm application into Rust/Gtk-rs."));
                 p.set_transient_for(Some(wx.borrow() as &Window));
                 p.run();
-                p.destroy();
+                p.close();
             });
         }
 
@@ -211,14 +211,14 @@ impl GWCApp {
         let toolbar = Toolbar::new();
         toolbar.set_style(ToolbarStyle::Both);
 
-        let open_btn_image = Image::new_from_icon_name(Some("document-open"), IconSize::LargeToolbar.into());
+        let open_btn_image = Image::from_icon_name(Some("document-open"), IconSize::LargeToolbar.into());
         let open_btn = ToolButton::new(Some(&open_btn_image), Some("Open"));
         toolbar.insert(&open_btn, 0);
 
         let sep = SeparatorToolItem::new();
         toolbar.insert(&sep, 1);
 
-        let quit_btn_image = Image::new_from_icon_name(Some("application-exit"), IconSize::LargeToolbar.into());
+        let quit_btn_image = Image::from_icon_name(Some("application-exit"), IconSize::LargeToolbar.into());
         let quit_btn = ToolButton::new(Some(&quit_btn_image), Some("Quit"));
         toolbar.insert(&quit_btn, 2);
 
