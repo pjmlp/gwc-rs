@@ -111,7 +111,7 @@ impl GWCApp {
 
         filesel.set_select_multiple(true);
         filesel.run();
-        let file = filesel.get_filename();
+        let file = filesel.filename();
         filesel.close();
 
         if let Some(filename) = file {
